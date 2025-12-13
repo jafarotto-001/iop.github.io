@@ -1,128 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Shop</title>
+<title>Shop Home</title>
 <style>
-    body { font-family: Arial; margin: 20px; }
-
-    .search-bar input {
-        width: 100%; padding: 10px;
-        border: 1px solid #aaa; border-radius: 5px;
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        margin-top: 20px;
-    }
-
-    .product, .category {
-        border: 1px solid #ddd;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-    }
-
-    img { width: 100%; border-radius: 5px; }
-
-    button {
-        margin-top: 10px;
-        background: black; color: white;
-        padding: 7px 10px; border: none; cursor: pointer;
-        border-radius: 5px;
-    }
+body{font-family:Arial;background:#f2f2f2;margin:0}
+h2{margin:15px}
+.categories{display:flex;gap:15px;padding:15px}
+.category{background:#fff;padding:15px;border-radius:8px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;padding:15px}
+.card{background:#fff;padding:10px;border-radius:8px;text-align:center}
+img{width:100%;border-radius:8px}
+button{margin-top:8px;padding:8px;background:black;color:#fff;border:none;border-radius:5px}
 </style>
 </head>
 <body>
 
-<h2>Search Products</h2>
-<div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Search...">
+<h2>Categories</h2>
+<div class="categories">
+  <div class="category" onclick="filter('Men')">Men</div>
+  <div class="category" onclick="filter('Women')">Women</div>
 </div>
 
-<h2>Categories</h2>
-<div class="grid" id="categoryContainer"></div>
-
 <h2>Products</h2>
-<div class="grid" id="productContainer"></div>
+<div id="products" class="grid"></div>
 
-<h2>Suggested for You</h2>
-<div class="grid" id="suggestedContainer"></div>
+<h2>Suggested For You</h2>
+<div id="suggested" class="grid"></div>
 
 <h2>You May Also Like</h2>
-<div class="grid" id="likeContainer"></div>
+<div id="liked" class="grid"></div>
 
 <script>
-let categories = [
-    {name: "Men"},
-    {name: "Women"},
-    {name: "Kids"}
+const products=[
+ {name:"Men T-shirt",price:"$12",cat:"Men",img:"https://via.placeholder.com/200",desc:"Cotton T-shirt"},
+ {name:"Ladies Dress",price:"$22",cat:"Women",img:"https://via.placeholder.com/200",desc:"Elegant dress"}
 ];
 
-let products = [
-    {name: "Men T-shirt", price: "$12", category: "Men",
-     img: "https://via.placeholder.com/200", description: "Nice cotton T-shirt"},
-    {name: "Ladies Dress", price: "$22", category: "Women",
-     img: "https://via.placeholder.com/200", description: "Beautiful dress"},
-    {name: "Kids Shoes", price: "$15", category: "Kids",
-     img: "https://via.placeholder.com/200", description: "Comfortable shoes"}
-];
-
-function loadCategories() {
-    let box = document.getElementById("categoryContainer");
-    box.innerHTML = "";
-    categories.forEach(c => {
-        box.innerHTML += `
-            <div class="category" onclick="filterCategory('${c.name}')">
-                <h3>${c.name}</h3>
-            </div>
-        `;
-    });
+function card(p){
+ return `<div class="card">
+   <img src="${p.img}">
+   <h3>${p.name}</h3>
+   <p>${p.price}</p>
+   <button onclick='openProduct(${JSON.stringify(p)})'>View</button>
+ </div>`;
 }
 
-function loadProducts(list, containerId) {
-    let box = document.getElementById(containerId);
-    box.innerHTML = "";
-    list.forEach((p, index) => {
-        box.innerHTML += `
-            <div class="product">
-                <img src="${p.img}">
-                <h3>${p.name}</h3>
-                <p>${p.price}</p>
-                <button onclick="openProduct(${index})">View</button>
-                <button onclick="buyNow('${p.name}')">Buy Now</button>
-            </div>
-        `;
-    });
+function load(list){
+ document.getElementById("products").innerHTML=list.map(card).join("");
 }
 
-function filterCategory(cat) {
-    let filtered = products.filter(p => p.category === cat);
-    loadProducts(filtered, "productContainer");
+function filter(cat){
+ load(products.filter(p=>p.cat===cat));
 }
 
-function openProduct(index) {
-    let p = products[index];
-    localStorage.setItem("product", JSON.stringify(p));
-    window.location.href = "product.html";
+function openProduct(p){
+ localStorage.setItem("product",JSON.stringify(p));
+ location.href="product.html";
 }
 
-function buyNow(name) {
-    alert("Cash on Delivery order received for: " + name + "\nOwner will see this message.");
-}
-
-document.getElementById("searchInput").addEventListener("input", function() {
-    let text = this.value.toLowerCase();
-    let s = products.filter(p => p.name.toLowerCase().includes(text));
-    loadProducts(s, "productContainer");
-});
-
-loadCategories();
-loadProducts(products, "productContainer");
-loadProducts(products, "suggestedContainer");
-loadProducts(products, "likeContainer");
+load(products);
+document.getElementById("suggested").innerHTML=products.map(card).join("");
+document.getElementById("liked").innerHTML=products.map(card).join("");
 </script>
 
 </body>
