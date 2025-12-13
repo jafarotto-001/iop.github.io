@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Order</title>
+<style>
+body{font-family:Arial;padding:20px}
+input{width:100%;padding:10px;margin:8px 0}
+button{padding:10px;background:green;color:white;border:none;width:100%}
+</style>
+</head>
+<body>
+
+<h2>Cash On Delivery</h2>
+
+<form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+<input name="product" id="p">
+<input name="name" placeholder="Customer Name" required>
+<input name="phone" placeholder="Phone Number" required>
+<input name="address" placeholder="Delivery Address" required>
+<button>Place Order</button>
+</form>
+
+<script>
+const o=JSON.parse(localStorage.getItem("order"));
+document.getElementById("p").value=o.name+" - "+o.price;
+</script>
+
+</body>
+</html>
